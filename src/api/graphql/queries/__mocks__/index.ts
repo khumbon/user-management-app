@@ -31,7 +31,7 @@ export const mockUsers: User[] = [
   },
   {
     id: "5",
-    gender: "Non-binary",
+    gender: "Female",
     firstName: "Taylor",
     lastName: "Brown",
     age: 30,

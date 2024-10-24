@@ -1,7 +1,7 @@
-const { ApolloServer, gql } = require('apollo-server');
-const axios = require('axios');
+const { ApolloServer, gql } = require("apollo-server");
+const axios = require("axios");
 
-const REST_API_URL = 'http://localhost:5000/users';
+const REST_API_URL = "http://localhost:5000/users";
 
 const typeDefs = gql`
   type User {
@@ -18,12 +18,23 @@ const typeDefs = gql`
   }
 
   type DeleteUserResponse {
-  success: Boolean!
-}
+    success: Boolean!
+  }
 
   type Mutation {
-    addUser(firstName: String!, lastName: String!, gender: String!, age: Int!): User
-    editUser(id: ID!, firstName: String, lastName: String, gender: String, age: Int): User
+    addUser(
+      firstName: String!
+      lastName: String!
+      gender: String!
+      age: Int!
+    ): User
+    editUser(
+      id: ID!
+      firstName: String
+      lastName: String
+      gender: String
+      age: Int
+    ): User
     deleteUser(id: ID!): DeleteUserResponse!
   }
 `;
@@ -37,7 +48,7 @@ const resolvers = {
     user: async (_, { id }) => {
       const response = await axios.get(`${REST_API_URL}/${id}`);
       return response.data;
-    }
+    },
   },
   Mutation: {
     addUser: async (_, { firstName, lastName, gender, age }) => {
@@ -45,7 +56,7 @@ const resolvers = {
         firstName,
         lastName,
         gender,
-        age
+        age,
       });
       return response.data;
     },
@@ -54,15 +65,15 @@ const resolvers = {
         firstName,
         lastName,
         gender,
-        age
+        age,
       });
       return response.data;
     },
     deleteUser: async (_, { id }) => {
       const response = await axios.delete(`${REST_API_URL}/${id}`);
       return { success: response.status === 200 };
-    }
-  }
+    },
+  },
 };
 
 const server = new ApolloServer({ typeDefs, resolvers });

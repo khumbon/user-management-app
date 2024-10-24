@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { UserManager } from "./components";
+import React from "react";
 
 const queryClient = new QueryClient();
 import { ApolloProvider } from "@apollo/client";

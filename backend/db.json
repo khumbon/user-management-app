@@ -9,59 +9,52 @@
     },
     {
       "id": "3",
-      "gender": "MALE",
+      "gender": "Male",
       "firstName": "Michael",
       "lastName": "Johnson",
       "age": 45
     },
     {
       "id": "4",
-      "gender": "FEMALE",
+      "gender": "Female",
       "firstName": "Emily",
       "lastName": "Davis",
       "age": 22
     },
     {
       "id": "5",
-      "gender": "FEMALE",
+      "gender": "Female",
       "firstName": "Sarah",
       "lastName": "Wilson",
       "age": 29
     },
     {
       "id": "6",
-      "gender": "MALE",
+      "gender": "Male",
       "firstName": "Christopher",
       "lastName": "Garcia",
       "age": 38
     },
     {
       "id": "7",
-      "gender": "FEMALE",
+      "gender": "Female",
       "firstName": "Jessica",
       "lastName": "Martinez",
       "age": 31
     },
     {
       "id": "8",
-      "gender": "MALE",
+      "gender": "Male",
       "firstName": "David",
       "lastName": "Hernandez",
       "age": 50
     },
     {
       "id": "9",
-      "gender": "FEMALE",
+      "gender": "Female",
       "firstName": "Laura",
       "lastName": "Lopez",
       "age": 27
-    },
-    {
-      "id": "7c09",
-      "firstName": "This",
-      "lastName": "That",
-      "gender": "Female",
-      "age": 25
     },
     {
       "id": "94a1",
@@ -69,6 +62,13 @@
       "lastName": "Last",
       "gender": "Female",
       "age": 67
+    },
+    {
+      "id": "b849",
+      "firstName": "Janice",
+      "lastName": "Monday",
+      "gender": "Female",
+      "age": 117
     }
   ]
 }

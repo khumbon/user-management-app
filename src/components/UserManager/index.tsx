@@ -9,15 +9,10 @@ import {
   TableBody,
   Button,
   Modal,
-  TextField,
   Container,
   Typography,
   Box,
   IconButton,
-  InputLabel,
-  Select,
-  MenuItem,
-  FormControl,
   TableSortLabel,
 } from "@mui/material";
 import { styled } from "@mui/system";
@@ -26,13 +21,15 @@ import {
   addUserMutation,
   deleteUserMutation,
   editUserMutation,
-  Gender,
   useGetUsersQuery,
   User,
 } from "../../api";
 import { Add as AddIcon } from "@mui/icons-material";
 import ErrorScreen from "../ErrorScreen";
 import { LoadingScreen } from "../LoadingScreen";
+import UserFormModal, { FormValues } from "../UserFormModal";
+import { PrimaryButton, SecondaryButton } from "../Buttons";
+import { ModalButtonContainer, ModalContent } from "../Boxes";
 
 const CustomContainer = styled(Container)({
   marginTop: "2rem",
@@ -58,46 +55,6 @@ const AddUserButton = styled(Button)({
     backgroundColor: "#333",
   },
 });
-
-const ModalContent = styled(Box)({
-  backgroundColor: "white",
-  padding: "2rem",
-  borderRadius: "8px",
-  width: "40%",
-  margin: "auto",
-  marginTop: "10%",
-  display: "flex",
-  flexDirection: "column",
-  gap: "1rem",
-});
-
-const ModalButtonContainer = styled(Box)({
-  display: "flex",
-  justifyContent: "flex-end",
-  gap: "1rem",
-  marginTop: "1rem",
-});
-
-const PrimaryButton = styled(Button)({
-  flexBasis: "66.66%",
-  backgroundColor: "black",
-  color: "white",
-  "&:hover": {
-    backgroundColor: "#333",
-  },
-});
-
-const SecondaryButton = styled(Button)({
-  flexBasis: "33.33%",
-  backgroundColor: "white",
-  color: "black",
-  border: "1px solid black",
-  "&:hover": {
-    backgroundColor: "#f5f5f5",
-  },
-});
-
-type FormValues = Omit<User, "id">;
 
 export const UserManager = () => {
   const [showModal, setShowModal] = useState(false);
@@ -175,7 +132,7 @@ export const UserManager = () => {
   const sortUsers = (users: User[]) => {
     if (!sortColumn) return users;
 
-    return users.sort((a, b) => {
+    return [...users].sort((a, b) => {
       const aValue = a[sortColumn];
       const bValue = b[sortColumn];
 
@@ -224,15 +181,6 @@ export const UserManager = () => {
       </Header>
 
       {userAlert && <Box role="status">{userAlert}</Box>}
-      {errors && (
-        <Box role="alert">
-          {Object.keys(errors).map((errorKey, index) => (
-            <Typography key={index} color="error">
-              {errorKey} is required.
-            </Typography>
-          ))}
-        </Box>
-      )}
 
       <TableContainer>
         <Table>
@@ -303,69 +251,16 @@ export const UserManager = () => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      <Modal open={showModal} onClose={() => setShowModal(false)}>
-        <ModalContent>
-          <Typography variant="h6">
-            {isEdit ? "Edit User" : "Add User"}
-          </Typography>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="gender-label">Gender</InputLabel>
-              <Select
-                labelId="gender-label"
-                label="Gender"
-                {...register("gender", { required: true })}
-                value={watch("gender") || ""}
-                onChange={(e) => setValue("gender", e.target.value as Gender)}
-                error={!!errors.gender}
-              >
-                <MenuItem value="Female">Female</MenuItem>
-                <MenuItem value="Male">Male</MenuItem>
-                <MenuItem value="Non-binary">Non-binary</MenuItem>
-                <MenuItem value="Other">Other</MenuItem>
-              </Select>
-              {errors.gender && (
-                <Typography color="error">Gender is required</Typography>
-              )}
-            </FormControl>
-            <TextField
-              label="First Name"
-              {...register("firstName", { required: true })}
-              fullWidth
-              margin="normal"
-              error={!!errors.firstName}
-              helperText={errors.firstName && "First name is required"}
-            />
-            <TextField
-              label="Last Name"
-              {...register("lastName", { required: true })}
-              fullWidth
-              margin="normal"
-              error={!!errors.lastName}
-              helperText={errors.lastName && "Last name is required"}
-            />
-            <TextField
-              label="Age"
-              type="number"
-              {...register("age", { required: true, min: 0 })}
-              fullWidth
-              margin="normal"
-              error={!!errors.age}
-              helperText={errors.age && "Age is required"}
-            />
-            <ModalButtonContainer>
-              <SecondaryButton onClick={() => setShowModal(false)}>
-                Cancel
-              </SecondaryButton>
-              <PrimaryButton type="submit">
-                {isEdit ? "Save" : "Add"}
-              </PrimaryButton>
-            </ModalButtonContainer>
-          </form>
-        </ModalContent>
-      </Modal>
-
+      <UserFormModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        isEdit={isEdit}
+        handleSubmit={handleSubmit(onSubmit)}
+        register={register}
+        setValue={setValue}
+        watch={watch}
+        errors={errors}
+      />
       <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
         <ModalContent>
           <Typography variant="h6">Confirm Delete</Typography>

@@ -1,0 +1,74 @@
+{
+  "users": [
+    {
+      "firstName": "Janette",
+      "lastName": "Smith",
+      "gender": "Male",
+      "age": 34,
+      "id": "2"
+    },
+    {
+      "id": "3",
+      "gender": "MALE",
+      "firstName": "Michael",
+      "lastName": "Johnson",
+      "age": 45
+    },
+    {
+      "id": "4",
+      "gender": "FEMALE",
+      "firstName": "Emily",
+      "lastName": "Davis",
+      "age": 22
+    },
+    {
+      "id": "5",
+      "gender": "FEMALE",
+      "firstName": "Sarah",
+      "lastName": "Wilson",
+      "age": 29
+    },
+    {
+      "id": "6",
+      "gender": "MALE",
+      "firstName": "Christopher",
+      "lastName": "Garcia",
+      "age": 38
+    },
+    {
+      "id": "7",
+      "gender": "FEMALE",
+      "firstName": "Jessica",
+      "lastName": "Martinez",
+      "age": 31
+    },
+    {
+      "id": "8",
+      "gender": "MALE",
+      "firstName": "David",
+      "lastName": "Hernandez",
+      "age": 50
+    },
+    {
+      "id": "9",
+      "gender": "FEMALE",
+      "firstName": "Laura",
+      "lastName": "Lopez",
+      "age": 27
+    },
+    {
+      "id": "7c09",
+      "firstName": "This",
+      "lastName": "That",
+      "gender": "Female",
+      "age": 25
+    },
+    {
+      "id": "94a1",
+      "firstName": "First",
+      "lastName": "Last",
+      "gender": "Female",
+      "age": 67
+    }
+  ]
+}

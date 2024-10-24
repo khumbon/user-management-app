@@ -10,7 +10,6 @@ import {
   Button,
   Modal,
   TextField,
-  CircularProgress,
   Container,
   Typography,
   Box,
@@ -31,15 +30,9 @@ import {
   useGetUsersQuery,
   User,
 } from "../../api";
-import { EditUserInput } from "../../api/graphql/mutations/types";
 import { Add as AddIcon } from "@mui/icons-material";
-
-const LoadingScreen = styled(Box)({
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  height: "100vh",
-});
+import ErrorScreen from "../ErrorScreen";
+import { LoadingScreen } from "../LoadingScreen";
 
 const CustomContainer = styled(Container)({
   marginTop: "2rem",
@@ -54,18 +47,17 @@ const Header = styled(Box)({
   marginBottom: "1rem",
 });
 
-const AddUserButton = styled(Button)(({
+const AddUserButton = styled(Button)({
   backgroundColor: "black",
   color: "white",
   borderRadius: "24px",
   display: "flex",
   alignItems: "center",
   padding: "0.5rem 1rem",
-  '&:hover': {
+  "&:hover": {
     backgroundColor: "#333",
   },
-}));
-
+});
 
 const ModalContent = styled(Box)({
   backgroundColor: "white",
@@ -80,31 +72,30 @@ const ModalContent = styled(Box)({
 });
 
 const ModalButtonContainer = styled(Box)({
-  display: 'flex',
-  justifyContent: 'flex-end',
-  gap: '1rem',
-  marginTop: '1rem',
+  display: "flex",
+  justifyContent: "flex-end",
+  gap: "1rem",
+  marginTop: "1rem",
 });
 
 const PrimaryButton = styled(Button)({
-  flexBasis: '66.66%',
-  backgroundColor: 'black',
-  color: 'white',
-  '&:hover': {
-    backgroundColor: '#333',
+  flexBasis: "66.66%",
+  backgroundColor: "black",
+  color: "white",
+  "&:hover": {
+    backgroundColor: "#333",
   },
 });
 
 const SecondaryButton = styled(Button)({
-  flexBasis: '33.33%',
-  backgroundColor: 'white',
-  color: 'black',
-  border: '1px solid black',
-  '&:hover': {
-    backgroundColor: '#f5f5f5',
+  flexBasis: "33.33%",
+  backgroundColor: "white",
+  color: "black",
+  border: "1px solid black",
+  "&:hover": {
+    backgroundColor: "#f5f5f5",
   },
 });
-
 
 type FormValues = Omit<User, "id">;
 
@@ -115,7 +106,7 @@ export const UserManager = () => {
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [userAlert, setUserAlert] = useState<string | null>(null);
-  const { data, isLoading, isError } = useGetUsersQuery();
+  const { data, isLoading, isError, error } = useGetUsersQuery();
   const [sortColumn, setSortColumn] = useState<keyof User | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
@@ -123,7 +114,14 @@ export const UserManager = () => {
   const editUser = editUserMutation();
   const deleteUser = deleteUserMutation();
 
-  const { register, handleSubmit, reset, formState: { errors }, setValue, watch } = useForm<FormValues>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<FormValues>();
 
   const resetUserAlert = () => {
     setTimeout(() => setUserAlert(null), 5000);
@@ -149,11 +147,19 @@ export const UserManager = () => {
     if (isEdit && selectedUser) {
       editUser.mutate(
         { id: selectedUser?.id, ...formValues },
-        { onSuccess: () => { setUserAlert("User updated"); resetUserAlert(); } }
+        {
+          onSuccess: () => {
+            setUserAlert("User updated");
+            resetUserAlert();
+          },
+        },
       );
     } else {
       addUser.mutate(formValues, {
-        onSuccess: () => { setUserAlert("User added"); resetUserAlert(); }
+        onSuccess: () => {
+          setUserAlert("User added");
+          resetUserAlert();
+        },
       });
     }
     setShowModal(false);
@@ -168,47 +174,53 @@ export const UserManager = () => {
 
   const sortUsers = (users: User[]) => {
     if (!sortColumn) return users;
-  
-    return [...users].sort((a, b) => {
+
+    return users.sort((a, b) => {
       const aValue = a[sortColumn];
       const bValue = b[sortColumn];
-  
-      if (typeof aValue === 'number' && typeof bValue === 'number') {
+
+      if (typeof aValue === "number" && typeof bValue === "number") {
         return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
-      } else if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortOrder === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortOrder === "asc"
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
       }
-  
+
       return 0;
     });
   };
-  
-  
 
   const handleSort = (column: keyof User) => {
-    const newSortOrder = sortColumn === column && sortOrder === "asc" ? "desc" : "asc";
+    const newSortOrder =
+      sortColumn === column && sortOrder === "asc" ? "desc" : "asc";
     setSortColumn(column);
     setSortOrder(newSortOrder);
   };
 
   if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (isError) {
     return (
-      <LoadingScreen>
-        <CircularProgress />
-      </LoadingScreen>
+      <ErrorScreen
+        errorMessage={error?.message || "Unable to fetch users."}
+        onRetry={() => window.location.reload()}
+      />
     );
   }
 
-  const sortedUsers = data?.data.users?sortUsers(data?.data?.users) :[];
+  const sortedUsers = data?.data.users ? sortUsers(data?.data?.users) : [];
 
   return (
     <CustomContainer>
       <Header>
         <Typography variant="h5">Users</Typography>
         <AddUserButton variant="contained" onClick={() => handleShowModal()}>
-    <AddIcon style={{ marginRight: '0.5rem' }} />
-    Add User
-  </AddUserButton>
+          <AddIcon style={{ marginRight: "0.5rem" }} />
+          Add User
+        </AddUserButton>
       </Header>
 
       {userAlert && <Box role="status">{userAlert}</Box>}
@@ -222,77 +234,81 @@ export const UserManager = () => {
         </Box>
       )}
 
-<TableContainer>
-  <Table>
-    <TableHead>
-      <TableRow>
-        <TableCell>
-          <TableSortLabel
-            active={sortColumn === "gender"}
-            direction={sortOrder}
-            onClick={() => handleSort("gender")}
-          >
-            Gender
-          </TableSortLabel>
-        </TableCell>
-        <TableCell>
-          <TableSortLabel
-            active={sortColumn === "firstName"}
-            direction={sortOrder}
-            onClick={() => handleSort("firstName")}
-          >
-            First Name
-          </TableSortLabel>
-        </TableCell>
-        <TableCell>
-          <TableSortLabel
-            active={sortColumn === "lastName"}
-            direction={sortOrder}
-            onClick={() => handleSort("lastName")}
-          >
-            Last Name
-          </TableSortLabel>
-        </TableCell>
-        <TableCell>
-          <TableSortLabel
-            active={sortColumn === "age"}
-            direction={sortOrder}
-            onClick={() => handleSort("age")}
-          >
-            Age
-          </TableSortLabel>
-        </TableCell>
-        <TableCell>Actions</TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {sortUsers.length > 0 && sortedUsers.map((user) => (
-        <TableRow key={user.id}>
-          <TableCell>{user.gender}</TableCell>
-          <TableCell>{user.firstName}</TableCell>
-          <TableCell>{user.lastName}</TableCell>
-          <TableCell>{user.age}</TableCell>
-          <TableCell>
-            <SecondaryButton onClick={() => handleShowModal(user)}>Edit</SecondaryButton>
-            <IconButton
-              onClick={() => {
-                setUserToDelete(user);
-                setShowDeleteModal(true);
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
-  </Table>
-</TableContainer>
-
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <TableSortLabel
+                  active={sortColumn === "gender"}
+                  direction={sortOrder}
+                  onClick={() => handleSort("gender")}
+                >
+                  Gender
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortColumn === "firstName"}
+                  direction={sortOrder}
+                  onClick={() => handleSort("firstName")}
+                >
+                  First Name
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortColumn === "lastName"}
+                  direction={sortOrder}
+                  onClick={() => handleSort("lastName")}
+                >
+                  Last Name
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={sortColumn === "age"}
+                  direction={sortOrder}
+                  onClick={() => handleSort("age")}
+                >
+                  Age
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {sortUsers.length > 0 &&
+              sortedUsers.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>{user.gender}</TableCell>
+                  <TableCell>{user.firstName}</TableCell>
+                  <TableCell>{user.lastName}</TableCell>
+                  <TableCell>{user.age}</TableCell>
+                  <TableCell>
+                    <SecondaryButton onClick={() => handleShowModal(user)}>
+                      Edit
+                    </SecondaryButton>
+                    <IconButton
+                      onClick={() => {
+                        setUserToDelete(user);
+                        setShowDeleteModal(true);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <Modal open={showModal} onClose={() => setShowModal(false)}>
         <ModalContent>
-          <Typography variant="h6">{isEdit ? "Edit User" : "Add User"}</Typography>
+          <Typography variant="h6">
+            {isEdit ? "Edit User" : "Add User"}
+          </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl fullWidth margin="normal">
               <InputLabel id="gender-label">Gender</InputLabel>
@@ -309,7 +325,9 @@ export const UserManager = () => {
                 <MenuItem value="Non-binary">Non-binary</MenuItem>
                 <MenuItem value="Other">Other</MenuItem>
               </Select>
-              {errors.gender && <Typography color="error">Gender is required</Typography>}
+              {errors.gender && (
+                <Typography color="error">Gender is required</Typography>
+              )}
             </FormControl>
             <TextField
               label="First Name"
@@ -337,8 +355,12 @@ export const UserManager = () => {
               helperText={errors.age && "Age is required"}
             />
             <ModalButtonContainer>
-            <SecondaryButton onClick={() => setShowModal(false)}>Cancel</SecondaryButton>
-              <PrimaryButton type="submit">{isEdit ? "Save" : "Add"}</PrimaryButton>
+              <SecondaryButton onClick={() => setShowModal(false)}>
+                Cancel
+              </SecondaryButton>
+              <PrimaryButton type="submit">
+                {isEdit ? "Save" : "Add"}
+              </PrimaryButton>
             </ModalButtonContainer>
           </form>
         </ModalContent>
@@ -350,7 +372,9 @@ export const UserManager = () => {
           <Typography>Are you sure you want to delete this user?</Typography>
           <ModalButtonContainer>
             <PrimaryButton onClick={handleDelete}>Delete</PrimaryButton>
-            <SecondaryButton onClick={() => setShowDeleteModal(false)}>Cancel</SecondaryButton>
+            <SecondaryButton onClick={() => setShowDeleteModal(false)}>
+              Cancel
+            </SecondaryButton>
           </ModalButtonContainer>
         </ModalContent>
       </Modal>

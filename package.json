@@ -10,13 +10,13 @@
   "main": "src/index.tsx",
   "dependencies": {
     "@apollo/client": "3.11.8",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mui/icons-material": "^6.1.5",
     "@mui/material": "^6.1.5",
-    "@stitches/react": "1.2.8",
     "@tanstack/react-query": "5.59.15",
     "@types/node": "22.7.7",
     "apollo-link-error": "^1.1.13",
@@ -42,8 +42,11 @@
     "@types/react-dom": "18.2.15",
     "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.37.2",
     "globals": "^15.11.0",
+    "prettier": "^3.3.3",
     "typescript": "^4.9.5",
     "typescript-eslint": "^8.11.0"
   },
@@ -58,7 +61,9 @@
     "graphql-server": "node backend/graphql-server/index.ts",
     "json-server": "json-server --watch backend/db.json --port 5000",
     "start:server": "concurrently \"npm run json-server\" \"npm run graphql-server\"",
+    "format": "prettier --write .",
     "lint": "eslint \"**/*{ts,tsx,js,jsx}\"",
+    "lint:fix": "npm run lint --fix",
     "typecheck": "tsc --noEmit"
   },
   "browserslist": [

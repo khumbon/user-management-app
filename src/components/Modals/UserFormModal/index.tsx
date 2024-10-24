@@ -14,9 +14,9 @@ import {
   FieldErrors,
   UseFormWatch,
 } from "react-hook-form";
-import { Gender, User } from "../../api";
-import { PrimaryButton, SecondaryButton } from "../Buttons";
-import { ModalButtonContainer, ModalContent } from "../Boxes";
+import { Gender, User } from "../../../api";
+import { PrimaryButton, SecondaryButton } from "../../Buttons";
+import { ModalButtonContainer, ModalContent } from "../../Boxes";
 
 export type FormValues = Omit<User, "id">;
 
@@ -31,7 +31,7 @@ interface UserFormModalProps {
   errors: FieldErrors<FormValues>;
 }
 
-const UserFormModal = ({
+export const UserFormModal = ({
   open,
   onClose,
   isEdit,
@@ -134,5 +134,3 @@ const UserFormModal = ({
     </Modal>
   );
 };
-
-export default UserFormModal;

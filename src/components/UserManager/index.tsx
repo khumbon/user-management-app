@@ -1,22 +1,7 @@
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import {
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Button,
-  Modal,
-  Container,
-  Typography,
-  Box,
-  IconButton,
-  TableSortLabel,
-} from "@mui/material";
+import { Button, Container, Typography, Box } from "@mui/material";
 import { styled } from "@mui/system";
-import { Delete as DeleteIcon } from "@mui/icons-material";
 import {
   addUserMutation,
   deleteUserMutation,
@@ -27,9 +12,8 @@ import {
 import { Add as AddIcon } from "@mui/icons-material";
 import ErrorScreen from "../ErrorScreen";
 import { LoadingScreen } from "../LoadingScreen";
-import UserFormModal, { FormValues } from "../UserFormModal";
-import { PrimaryButton, SecondaryButton } from "../Buttons";
-import { ModalButtonContainer, ModalContent } from "../Boxes";
+import { UserTable } from "../UserTable";
+import { DeleteConfirmationModal, FormValues, UserFormModal } from "../Modals";
 
 const CustomContainer = styled(Container)({
   marginTop: "2rem",
@@ -64,8 +48,6 @@ export const UserManager = () => {
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [userAlert, setUserAlert] = useState<string | null>(null);
   const { data, isLoading, isError, error } = useGetUsersQuery();
-  const [sortColumn, setSortColumn] = useState<keyof User | null>(null);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const addUser = addUserMutation();
   const editUser = editUserMutation();
@@ -129,32 +111,6 @@ export const UserManager = () => {
     }
   };
 
-  const sortUsers = (users: User[]) => {
-    if (!sortColumn) return users;
-
-    return [...users].sort((a, b) => {
-      const aValue = a[sortColumn];
-      const bValue = b[sortColumn];
-
-      if (typeof aValue === "number" && typeof bValue === "number") {
-        return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
-      } else if (typeof aValue === "string" && typeof bValue === "string") {
-        return sortOrder === "asc"
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      }
-
-      return 0;
-    });
-  };
-
-  const handleSort = (column: keyof User) => {
-    const newSortOrder =
-      sortColumn === column && sortOrder === "asc" ? "desc" : "asc";
-    setSortColumn(column);
-    setSortOrder(newSortOrder);
-  };
-
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -168,8 +124,6 @@ export const UserManager = () => {
     );
   }
 
-  const sortedUsers = data?.data.users ? sortUsers(data?.data?.users) : [];
-
   return (
     <CustomContainer>
       <Header>
@@ -182,75 +136,12 @@ export const UserManager = () => {
 
       {userAlert && <Box role="status">{userAlert}</Box>}
 
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <TableSortLabel
-                  active={sortColumn === "gender"}
-                  direction={sortOrder}
-                  onClick={() => handleSort("gender")}
-                >
-                  Gender
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={sortColumn === "firstName"}
-                  direction={sortOrder}
-                  onClick={() => handleSort("firstName")}
-                >
-                  First Name
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={sortColumn === "lastName"}
-                  direction={sortOrder}
-                  onClick={() => handleSort("lastName")}
-                >
-                  Last Name
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={sortColumn === "age"}
-                  direction={sortOrder}
-                  onClick={() => handleSort("age")}
-                >
-                  Age
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sortUsers.length > 0 &&
-              sortedUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.gender}</TableCell>
-                  <TableCell>{user.firstName}</TableCell>
-                  <TableCell>{user.lastName}</TableCell>
-                  <TableCell>{user.age}</TableCell>
-                  <TableCell>
-                    <SecondaryButton onClick={() => handleShowModal(user)}>
-                      Edit
-                    </SecondaryButton>
-                    <IconButton
-                      onClick={() => {
-                        setUserToDelete(user);
-                        setShowDeleteModal(true);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <UserTable
+        users={data?.data?.users}
+        handleShowModal={handleShowModal}
+        setUserToDelete={setUserToDelete}
+        setShowDeleteModal={setShowDeleteModal}
+      />
       <UserFormModal
         open={showModal}
         onClose={() => setShowModal(false)}
@@ -261,18 +152,11 @@ export const UserManager = () => {
         watch={watch}
         errors={errors}
       />
-      <Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
-        <ModalContent>
-          <Typography variant="h6">Confirm Delete</Typography>
-          <Typography>Are you sure you want to delete this user?</Typography>
-          <ModalButtonContainer>
-            <PrimaryButton onClick={handleDelete}>Delete</PrimaryButton>
-            <SecondaryButton onClick={() => setShowDeleteModal(false)}>
-              Cancel
-            </SecondaryButton>
-          </ModalButtonContainer>
-        </ModalContent>
-      </Modal>
+      <DeleteConfirmationModal
+        open={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onDelete={handleDelete}
+      />
     </CustomContainer>
   );
 };

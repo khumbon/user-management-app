@@ -1,1 +1,0 @@
-export { useGetUsersQuery } from "./getUsers";

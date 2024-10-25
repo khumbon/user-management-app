@@ -28,6 +28,7 @@
     "graphql-http": "1.22.1",
     "json-server": "^1.0.0-beta.3",
     "loader-utils": "3.2.1",
+    "node-fetch": "^3.3.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.53.1",
@@ -35,9 +36,14 @@
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
+    "@apollo/react-testing": "^4.0.0",
+    "@babel/preset-react": "^7.25.9",
     "@eslint/js": "^9.13.0",
     "@playwright/test": "^1.48.1",
+    "@testing-library/jest-dom": "^6.6.2",
+    "@testing-library/react": "^16.0.1",
     "@types/cors": "^2.8.17",
+    "@types/jest": "^29.5.14",
     "@types/react": "^18.3.11",
     "@types/react-dom": "18.2.15",
     "@typescript-eslint/parser": "^5.62.0",
@@ -46,7 +52,10 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.37.2",
     "globals": "^15.11.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "prettier": "^3.3.3",
+    "ts-jest": "^29.2.5",
     "typescript": "^4.9.5",
     "typescript-eslint": "^8.11.0"
   },
@@ -54,17 +63,19 @@
     "pnpm": ">=8"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start:web": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "graphql-server": "node backend/graphql-server/index.ts",
     "json-server": "json-server --watch backend/db.json --port 5000",
     "start:server": "concurrently \"npm run json-server\" \"npm run graphql-server\"",
+    "start": "concurrently \"npm run start:web\" \"npm run graphql-server\" \"npm run json-server\"",
     "format": "prettier --write .",
     "lint": "eslint \"**/*{ts,tsx,js,jsx}\"",
     "lint:fix": "npm run lint --fix",
-    "typecheck": "tsc --noEmit"
+    "test": "jest  --config ./jest.config.js --passWithNoTests",
+    "typecheck": "tsc --noEmit",
+    "test:pw": "playwright test"
   },
   "browserslist": [
     ">0.2%",

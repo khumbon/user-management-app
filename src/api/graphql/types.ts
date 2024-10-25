@@ -1,4 +1,7 @@
-export type Gender = "Male" | "Female";
+export enum Gender {
+  Male = "Male",
+  Female = "Female",
+}
 
 export type User = {
   id: string;

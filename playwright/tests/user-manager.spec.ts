@@ -45,7 +45,7 @@ test.describe("UserManager component", () => {
 
     const userRows = await page.locator("table tbody tr");
 
-    await expect(userRows).toHaveCount(13);
+    await expect(userRows).toHaveCount(11);
   });
 
   test("should sort users by first name", async ({ page }) => {

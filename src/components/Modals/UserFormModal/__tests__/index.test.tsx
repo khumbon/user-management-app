@@ -1,14 +1,21 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { FieldErrors } from "react-hook-form";
-import { FormValues, UserFormModal } from "..";
+import { UserFormModal, FormValues } from "..";
+import {
+  UseFormRegister,
+  UseFormSetValue,
+  FieldErrors,
+  UseFormWatch,
+} from "react-hook-form";
 
 describe("UserFormModal Component", () => {
   const mockOnClose = jest.fn();
-  const mockHandleSubmit = jest.fn((e) => e.preventDefault());
-  const mockSetValue = jest.fn();
-  const mockWatch = jest.fn();
-  const mockRegister = jest.fn();
+  const mockHandleSubmit = jest.fn((data) => data);
+  const mockRegister = jest.fn() as unknown as UseFormRegister<FormValues>;
+  const mockSetValue = jest.fn() as unknown as UseFormSetValue<FormValues>;
+  const mockWatch = jest
+    .fn()
+    .mockReturnValue("") as unknown as UseFormWatch<FormValues>;
   const mockErrors: FieldErrors<FormValues> = {
     firstName: { type: "required", message: "First name is required" },
     lastName: { type: "required", message: "Last name is required" },
@@ -38,12 +45,12 @@ describe("UserFormModal Component", () => {
   it("renders the modal with correct content for adding user", () => {
     renderComponent();
 
-    expect(screen.getByText("Add User")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Add User" })).toBeTruthy();
     expect(screen.getByLabelText("Gender")).toBeTruthy();
     expect(screen.getByLabelText("First Name")).toBeTruthy();
     expect(screen.getByLabelText("Last Name")).toBeTruthy();
     expect(screen.getByLabelText("Age")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Add" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Add User" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Cancel" })).toBeTruthy();
   });
 
@@ -51,27 +58,22 @@ describe("UserFormModal Component", () => {
     renderComponent(true);
 
     expect(screen.getByText("Edit User")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Save" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Save Changes" })).toBeTruthy();
   });
 
   it("closes the modal when the cancel button is clicked", () => {
     renderComponent();
 
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
-
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it("submits the form with correct values", () => {
+  it("submits the form with correct values", async () => {
     renderComponent();
 
-    mockWatch.mockReturnValue("Female");
-    mockRegister.mockReturnValue({
-      onChange: jest.fn(),
-      onBlur: jest.fn(),
-      ref: jest.fn(),
-    });
-
+    fireEvent.mouseDown(screen.getByLabelText("Gender"));
+    const genderOption = await screen.findByText("Female");
+    fireEvent.click(genderOption);
     fireEvent.change(screen.getByLabelText("First Name"), {
       target: { value: "Jane" },
     });
@@ -80,20 +82,20 @@ describe("UserFormModal Component", () => {
     });
     fireEvent.change(screen.getByLabelText("Age"), { target: { value: "25" } });
 
-    fireEvent.click(screen.getByRole("button", { name: "Add" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add User" }));
 
     expect(mockHandleSubmit).toHaveBeenCalled();
   });
 
-  it("displays validation errors", () => {
+  it("displays validation errors", async () => {
     renderComponent();
 
-    fireEvent.click(screen.getByRole("button", { name: "Add" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add User" }));
 
-    expect(screen.getByText("Gender is required")).toBeTruthy();
-    expect(screen.getByText("First name is required")).toBeTruthy();
-    expect(screen.getByText("Last name is required")).toBeTruthy();
-    expect(screen.getByText("Age is required")).toBeTruthy();
+    expect(await screen.findByText("Gender is required")).toBeTruthy();
+    expect(await screen.findByText("First name is required")).toBeTruthy();
+    expect(await screen.findByText("Last name is required")).toBeTruthy();
+    expect(await screen.findByText("Age is required")).toBeTruthy();
   });
 
   it("does not render the modal when closed", () => {

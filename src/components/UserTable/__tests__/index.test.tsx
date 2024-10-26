@@ -7,14 +7,14 @@ describe("UserTable Component", () => {
   const users: User[] = [
     {
       id: "1",
-      gender: Gender.Male,
+      gender: Gender.MALE,
       firstName: "John",
       lastName: "Doe",
       age: 30,
     },
     {
       id: "2",
-      gender: Gender.Female,
+      gender: Gender.FEMALE,
       firstName: "Jane",
       lastName: "Smith",
       age: 25,
@@ -82,9 +82,8 @@ describe("UserTable Component", () => {
       />,
     );
 
-    const deleteButtons = screen.getAllByRole("button");
-    screen.debug()
-    fireEvent.click(deleteButtons[1]);
+    const deleteButton = screen.getAllByRole('button', { name: /delete/i });
+    fireEvent.click(deleteButton[0]);    
 
     expect(setUserToDeleteMock).toHaveBeenCalledWith(users[0]);
     expect(setUserToDeleteMock).toHaveBeenCalledTimes(1);

@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
 import { Button, Container, Typography, Box } from "@mui/material";
 import { styled } from "@mui/system";
 import {
   addUserMutation,
   deleteUserMutation,
   editUserMutation,
+  Gender,
   useGetUsersQuery,
   User,
 } from "../../api";
@@ -14,7 +17,7 @@ import ErrorScreen from "../ErrorScreen";
 import { LoadingScreen } from "../LoadingScreen";
 import { UserTable } from "../UserTable";
 import { DeleteConfirmationModal, FormValues, UserFormModal } from "../Modals";
-import { QueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CustomContainer = styled(Container)({
   marginTop: "2rem",
@@ -41,19 +44,41 @@ const AddUserButton = styled(Button)({
   },
 });
 
-interface UserManagerProps {
-  queryClient: QueryClient;
-}
+const schema: Yup.ObjectSchema<FormValues> = Yup.object().shape({
+  gender: Yup.mixed<Gender>()
+    .oneOf([Gender.MALE, Gender.FEMALE])
+    .required("Gender is required"),
+  firstName: Yup.string()
+    .required("First name is required")
+    .min(5, "First Name must be at least 5 characters long")
+    .max(20, "First Name cannot be longer than 20 characters"),
+  lastName: Yup.string()
+    .required("Last name is required")
+    .min(5, "Last Name must be at least 5 characters long")
+    .max(20, "Last Name cannot be longer than 20 characters"),
+  age: Yup.number()
+    .transform((value, originalValue) => (originalValue === "" ? null : value))
+    .required("Age is required")
+    .min(18, "Age must be at least 18")
+    .test("max-age", "Maximum age is invalid", function (value) {
+      const { gender } = this.parent;
+      return (
+        (gender === Gender.MALE && value <= 112) ||
+        (gender === Gender.FEMALE && value <= 117)
+      );
+    }),
+});
 
-export const UserManager = ({ queryClient }: UserManagerProps) => {
+export const UserManager = () => {
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [userAlert, setUserAlert] = useState<string | null>(null);
-  const { data, isLoading, isError, error } = useGetUsersQuery();
 
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError, error } = useGetUsersQuery();
   const addUser = addUserMutation();
   const editUser = editUserMutation();
   const deleteUser = deleteUserMutation();
@@ -62,38 +87,37 @@ export const UserManager = ({ queryClient }: UserManagerProps) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
     setValue,
     watch,
-  } = useForm<FormValues>();
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: yupResolver(schema),
+  });
 
   const resetUserAlert = () => {
     setTimeout(() => setUserAlert(null), 5000);
   };
 
-  const usersUpdate = (alert: string) => {
-    return {
-      onSuccess: () => {
-        setUserAlert(alert);
-        resetUserAlert();
-        queryClient.invalidateQueries({ queryKey: ["users"] });
-      },
-    };
-  };
+  const usersUpdate = (alert: string) => ({
+    onSuccess: async () => {
+      setUserAlert(alert);
+      resetUserAlert();
+      await queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+
   const handleShowModal = (user?: User) => {
     setIsEdit(!!user);
     setSelectedUser(user || null);
     setShowModal(true);
-    if (user) {
-      reset(user);
-    } else {
-      reset({
+    reset(
+      user || {
         gender: undefined,
         firstName: undefined,
         lastName: undefined,
         age: undefined,
-      });
-    }
+      },
+    );
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (formValues) => {

@@ -5,14 +5,14 @@ describe("sortUsers function", () => {
   const users: User[] = [
     {
       id: "1",
-      gender: Gender.Male,
+      gender: Gender.MALE,
       firstName: "John",
       lastName: "Doe",
       age: 30,
     },
     {
       id: "2",
-      gender: Gender.Female,
+      gender: Gender.FEMALE,
       firstName: "Jane",
       lastName: "Smith",
       age: 25,

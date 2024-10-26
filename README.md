@@ -1,9 +1,11 @@
 # User Management Application Project
 
 ## Description
+
 The User Management Application is a production-ready web application designed to provide a comprehensive user experience (UX) for performing CRUD (Create, Read, Update, Delete) operations on a User entity.
 
 ## Features
+
 - User management functionalities (view, add, edit, delete users)
 - GraphQL and RESTful APIs
 - Type safety with TypeScript
@@ -11,6 +13,7 @@ The User Management Application is a production-ready web application designed t
 - Styled with Material-UI
 
 ## Technologies
+
 - **React**: Frontend library for building user interfaces.
 - **TypeScript**: Superset of JavaScript that adds static typing.
 - **Material-UI**: React UI framework for faster and easier web development.
@@ -24,7 +27,9 @@ The User Management Application is a production-ready web application designed t
 ## Getting Started
 
 ### Installation
+
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/khumbon/user-management-app
    cd user-management-app
@@ -36,42 +41,57 @@ The User Management Application is a production-ready web application designed t
    ```
 
 ### Running the Application
+
 To start the application along with the GraphQL and JSON server, run:
+
 ```bash
 npm run start
 ```
+
 This command will run the following scripts concurrently:
+
 - React development server (on port 3000)
 - JSON server (on port 5000)
 - GraphQL server (on port 4000)
 
 ### Testing
+
 To run the unit tests, use:
+
 ```bash
 npm run test
 ```
+
 To run Playwright end-to-end tests, use:
+
 ```bash
 npm run test:pw
 ```
 
 ### Linting
+
 To check for code quality issues, run:
+
 ```bash
 npm run lint
 ```
+
 To automatically fix linting errors, run:
+
 ```bash
 npm run lint:fix
 ```
 
 ### Type Checking
+
 To perform type checking on the codebase, run:
+
 ```bash
 npm run typecheck
 ```
 
 ## Scripts
+
 The following scripts are available:
 
 - `start:web`: Starts the React development server.
@@ -88,5 +108,4 @@ The following scripts are available:
 - `typecheck`: Checks TypeScript types.
 - `test:pw`: Runs Playwright tests.
 
-
- TODO: atoms, molecules, organisms, test queries and mutations using msw - mock service worker
+TODO: atoms, molecules, organisms, test queries and mutations using msw - mock service worker

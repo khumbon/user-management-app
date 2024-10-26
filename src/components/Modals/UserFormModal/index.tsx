@@ -14,7 +14,7 @@ import {
   FieldErrors,
   UseFormWatch,
 } from "react-hook-form";
-import { Gender, User } from "../../../api";
+import { Gender, User } from "../../../api/graphql/types";
 import { PrimaryButton, SecondaryButton } from "../../Buttons";
 import { ModalButtonContainer, ModalContent } from "../../Boxes";
 
@@ -53,13 +53,13 @@ export const UserFormModal = ({
             <Select
               labelId="gender-label"
               label="Gender"
-              {...register("gender", { required: true })}
+              {...register("gender")}
               value={watch("gender") || ""}
               onChange={(e) => setValue("gender", e.target.value as Gender)}
               error={!!errors.gender}
             >
-              <MenuItem value="Female">Female</MenuItem>
-              <MenuItem value="Male">Male</MenuItem>
+              <MenuItem value="Female">{Gender.FEMALE}</MenuItem>
+              <MenuItem value="Male">{Gender.MALE}</MenuItem>
             </Select>
             {errors.gender && (
               <Typography color="error">Gender is required</Typography>
@@ -67,17 +67,7 @@ export const UserFormModal = ({
           </FormControl>
           <TextField
             label="First Name"
-            {...register("firstName", {
-              required: "First name is required",
-              minLength: {
-                value: 5,
-                message: "First Name must be at least 5 characters long",
-              },
-              maxLength: {
-                value: 20,
-                message: "First Name cannot be longer than 20 characters",
-              },
-            })}
+            {...register("firstName")}
             fullWidth
             margin="normal"
             error={!!errors.firstName}
@@ -85,17 +75,7 @@ export const UserFormModal = ({
           />
           <TextField
             label="Last Name"
-            {...register("lastName", {
-              required: "Last name is required",
-              minLength: {
-                value: 5,
-                message: "Last Name must be at least 5 characters long",
-              },
-              maxLength: {
-                value: 20,
-                message: "Last Name cannot be longer than 20 characters",
-              },
-            })}
+            {...register("lastName")}
             fullWidth
             margin="normal"
             error={!!errors.lastName}
@@ -104,30 +84,17 @@ export const UserFormModal = ({
           <TextField
             label="Age"
             type="number"
-            {...register("age", {
-              required: "Age is required",
-              min: {
-                value: 18,
-                message: "Age must be at least 18",
-              },
-              max: {
-                value: watch("gender") === "Male" ? 112 : 117,
-                message:
-                  watch("gender") === "Male"
-                    ? "Maximum age for males is 112"
-                    : "Maximum age for females is 117",
-              },
-            })}
+            {...register("age")}
             fullWidth
             margin="normal"
             error={!!errors.age}
             helperText={errors.age?.message}
           />
           <ModalButtonContainer>
-            <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
             <PrimaryButton type="submit">
-              {isEdit ? "Save" : "Add"}
+              {isEdit ? "Save Changes" : "Add User"}
             </PrimaryButton>
+            <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
           </ModalButtonContainer>
         </form>
       </ModalContent>

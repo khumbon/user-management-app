@@ -19,7 +19,7 @@ test.describe("UserManager component", () => {
     const alert = await page.locator('[role="status"]');
     await expect(alert).toHaveText("User added");
   });
-/** 
+  /** 
   test("should allow editing an existing user", async ({ page }) => {
     await page
       .locator("tr >> nth=1")

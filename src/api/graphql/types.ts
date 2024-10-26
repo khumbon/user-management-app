@@ -1,6 +1,6 @@
 export enum Gender {
-  Male = "Male",
-  Female = "Female",
+  MALE = "Male",
+  FEMALE = "Female",
 }
 
 export type User = {

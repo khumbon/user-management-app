@@ -34,7 +34,8 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.53.1",
     "react-scripts": "5.0.1",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@apollo/react-testing": "^4.0.0",

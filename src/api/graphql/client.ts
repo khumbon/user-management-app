@@ -1,21 +1,17 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-
-export const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
-  cache: new InMemoryCache(),
-});
-
-/**
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const fetch = require('node-fetch');
-
+import {
+  ApolloClient,
+  ApolloLink,
+  HttpLink,
+  InMemoryCache,
+} from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
 
 const errorLink = onError(({ operation, graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     graphQLErrors.forEach(({ message, locations, path }) =>
       console.log(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, Operation: ${operation}`
-      )
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, Operation: ${operation}`,
+      ),
     );
   }
   if (networkError) {
@@ -27,8 +23,6 @@ const errorLink = onError(({ operation, graphQLErrors, networkError }) => {
 
 const httpLink = new HttpLink({
   uri: "http://localhost:4000/graphql",
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fetch: fetch as any,
 });
 
 const link = ApolloLink.from([errorLink, httpLink]);
@@ -39,4 +33,3 @@ export const client = new ApolloClient({
   link,
   cache,
 });
-*/

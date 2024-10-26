@@ -9,9 +9,16 @@
     "plugin:@typescript-eslint/recommended",
     "prettier",
     "plugin:prettier/recommended",
+    "plugin:react/recommended",
     "plugin:react/recommended"
   ],
+  "plugins": ["react"],
   "rules": {
     "@typescript-eslint/no-unused-vars": "warn"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
   }
 }

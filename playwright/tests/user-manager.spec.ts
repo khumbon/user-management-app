@@ -11,7 +11,7 @@ test.describe("UserManager component", () => {
     await page.locator('input[name="firstName"]').fill("John");
     await page.locator('input[name="lastName"]').fill("Doe");
     await page.locator('input[name="age"]').fill("30");
-    await page.locator("#gender-label").click();
+    await page.locator('#gender-label').click();
     await page.locator("li", { hasText: "Male" }).click();
 
     await page.locator("form").locator('button[type="submit"]').click();

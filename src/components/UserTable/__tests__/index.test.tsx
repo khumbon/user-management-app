@@ -82,8 +82,8 @@ describe("UserTable Component", () => {
       />,
     );
 
-    const deleteButton = screen.getAllByRole('button', { name: /delete/i });
-    fireEvent.click(deleteButton[0]);    
+    const deleteButton = screen.getAllByRole("button", { name: /delete/i });
+    fireEvent.click(deleteButton[0]);
 
     expect(setUserToDeleteMock).toHaveBeenCalledWith(users[0]);
     expect(setUserToDeleteMock).toHaveBeenCalledTimes(1);

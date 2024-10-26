@@ -100,6 +100,7 @@ export const UserTable = ({
                       setUserToDelete(user);
                       setShowDeleteModal(true);
                     }}
+                    aria-label="delete"
                   >
                     <DeleteIcon />
                   </IconButton>

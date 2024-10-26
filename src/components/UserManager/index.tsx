@@ -14,7 +14,7 @@ import ErrorScreen from "../ErrorScreen";
 import { LoadingScreen } from "../LoadingScreen";
 import { UserTable } from "../UserTable";
 import { DeleteConfirmationModal, FormValues, UserFormModal } from "../Modals";
-import { QueryCache, QueryClient } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 
 const CustomContainer = styled(Container)({
   marginTop: "2rem",

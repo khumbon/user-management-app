@@ -1,5 +1,5 @@
-const { ApolloServer, gql } = require("apollo-server");
-const axios = require("axios");
+import { ApolloServer, gql } from "apollo-server";
+import axios from "axios";
 
 const REST_API_URL = "http://localhost:5000/users";
 

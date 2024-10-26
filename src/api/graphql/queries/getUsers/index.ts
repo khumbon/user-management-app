@@ -3,7 +3,7 @@ import { User } from "../../types";
 import { client } from "../../client";
 import { gql } from "@apollo/client";
 
-const GET_USERS = gql`
+export const GET_USERS = gql`
   query GetUsers {
     users {
       id

@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { useMutation } from "@tanstack/react-query";
 import { client } from "../../client";
 
-const DELETE_USER = gql`
+export const DELETE_USER = gql`
   mutation DeleteUser($id: ID!) {
     deleteUser(id: $id) {
       success

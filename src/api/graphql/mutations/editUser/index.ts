@@ -3,7 +3,7 @@ import { User } from "../../types";
 import { client } from "../../client";
 import { gql } from "@apollo/client";
 
-const EDIT_USER = gql`
+export const EDIT_USER = gql`
   mutation EditUser(
     $id: ID!
     $firstName: String
@@ -38,7 +38,7 @@ export const editUserMutation = () => {
     }) => {
       return await client.mutate<{ editUser: User }>({
         mutation: EDIT_USER,
-        variables: editUserInput,
+        variables: { ...editUserInput, age: Number(editUserInput.age) },
       });
     },
   });

@@ -10,7 +10,7 @@ const App = () => {
   return (
     <ApolloProvider client={client}>
       <QueryClientProvider client={queryClient}>
-        <UserManager />
+        <UserManager queryClient={queryClient} />
       </QueryClientProvider>
     </ApolloProvider>
   );

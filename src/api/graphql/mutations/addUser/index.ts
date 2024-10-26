@@ -3,7 +3,7 @@ import { User } from "../../types";
 import { client } from "../../client";
 import { gql } from "@apollo/client";
 
-const ADD_USER = gql`
+export const ADD_USER = gql`
   mutation AddUser(
     $firstName: String!
     $lastName: String!

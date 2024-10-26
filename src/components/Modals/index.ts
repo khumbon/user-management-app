@@ -1,2 +1,2 @@
-export { UserFormModal, FormValues } from "./UserFormModal";
+export * from "./UserFormModal";
 export { DeleteConfirmationModal } from "./DeleteConfirmationModal";

@@ -14,6 +14,7 @@ import ErrorScreen from "../ErrorScreen";
 import { LoadingScreen } from "../LoadingScreen";
 import { UserTable } from "../UserTable";
 import { DeleteConfirmationModal, FormValues, UserFormModal } from "../Modals";
+import { QueryClient } from "@tanstack/react-query";
 
 const CustomContainer = styled(Container)({
   marginTop: "2rem",
@@ -40,7 +41,11 @@ const AddUserButton = styled(Button)({
   },
 });
 
-export const UserManager = () => {
+interface UserManagerProps {
+  queryClient: QueryClient;
+}
+
+export const UserManager = ({ queryClient }: UserManagerProps) => {
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -66,6 +71,15 @@ export const UserManager = () => {
     setTimeout(() => setUserAlert(null), 5000);
   };
 
+  const usersUpdate = (alert: string) => {
+    return {
+      onSuccess: () => {
+        setUserAlert(alert);
+        resetUserAlert();
+        queryClient.invalidateQueries({ queryKey: ["users"] });
+      },
+    };
+  };
   const handleShowModal = (user?: User) => {
     setIsEdit(!!user);
     setSelectedUser(user || null);
@@ -82,31 +96,21 @@ export const UserManager = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<FormValues> = (formValues) => {
+  const onSubmit: SubmitHandler<FormValues> = async (formValues) => {
     if (isEdit && selectedUser) {
-      editUser.mutate(
+      await editUser.mutate(
         { id: selectedUser?.id, ...formValues },
-        {
-          onSuccess: () => {
-            setUserAlert("User updated");
-            resetUserAlert();
-          },
-        },
+        usersUpdate("User updated"),
       );
     } else {
-      addUser.mutate(formValues, {
-        onSuccess: () => {
-          setUserAlert("User added");
-          resetUserAlert();
-        },
-      });
+      await addUser.mutate(formValues, usersUpdate("User added"));
     }
     setShowModal(false);
   };
 
   const handleDelete = () => {
     if (userToDelete?.id) {
-      deleteUser.mutate(userToDelete?.id);
+      deleteUser.mutate(userToDelete?.id, usersUpdate("User deleted"));
       setShowDeleteModal(false);
     }
   };

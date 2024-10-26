@@ -18,6 +18,7 @@ import { LoadingScreen } from "../LoadingScreen";
 import { UserTable } from "../UserTable";
 import { DeleteConfirmationModal, FormValues, UserFormModal } from "../Modals";
 import { useQueryClient } from "@tanstack/react-query";
+import { Alert } from "../Boxes";
 
 const CustomContainer = styled(Container)({
   marginTop: "2rem",
@@ -162,7 +163,7 @@ export const UserManager = () => {
         </AddUserButton>
       </Header>
 
-      {userAlert && <Box role="status">{userAlert}</Box>}
+      {userAlert && <Alert role="status">{userAlert}</Alert>}
 
       <UserTable
         users={data?.data?.users}

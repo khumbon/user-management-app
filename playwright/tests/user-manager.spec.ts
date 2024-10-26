@@ -6,6 +6,7 @@ test.describe("UserManager component", () => {
   });
 
   test("should allow adding a new user", async ({ page }) => {
+    page.pause();
     await page.locator("button", { hasText: "Add User" }).click();
 
     await page.locator('input[name="firstName"]').fill("John");

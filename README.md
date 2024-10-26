@@ -22,7 +22,7 @@ The User Management Application is a production-ready web application designed t
 - **GraphQL**: Query language for APIs and a runtime for executing those queries.
 - **JSON Server**: Fake REST API for testing and development.
 - **Playwright**: End-to-end testing framework.
-- **Jest**: JavaScript testing framework used for unit and integration testing.
+- **Jest**: JavaScript testing framework used for unit testing.
 
 ## Getting Started
 
@@ -35,9 +35,28 @@ The User Management Application is a production-ready web application designed t
    cd user-management-app
    ```
 
-2. Install dependencies using npm run:
+2. **Install pnpm**: If you don't have pnpm installed, you can install it globally using npm:
+
    ```bash
-   npm install
+   npm install -g pnpm
+   ```
+
+   <details>
+   <summary><strong>Benefits of Using pnpm</strong></summary>
+
+   - **Fast Installations**: pnpm uses a unique symlinked structure to share packages across projects, resulting in faster installations and less disk space usage.
+
+   - **Efficient Disk Space Usage**: By storing a single copy of each package version on disk and using symlinks to reference them, pnpm significantly reduces duplication.
+
+   - **Strict Dependency Resolution**: pnpm enforces a stricter dependency resolution strategy, preventing issues that arise from hoisted dependencies. This leads to fewer conflicts and more predictable builds.
+
+   - **Offline Mode**: pnpm allows you to install packages from the local cache without needing an internet connection, which can be beneficial for development in environments with limited connectivity.
+
+   </details>
+
+3. Install dependencies using pnpm:
+   ```bash
+   pnpm install
    ```
 
 ### Running the Application
@@ -45,7 +64,7 @@ The User Management Application is a production-ready web application designed t
 To start the application along with the GraphQL and JSON server, run:
 
 ```bash
-npm run start
+pnpm start
 ```
 
 This command will run the following scripts concurrently:
@@ -59,13 +78,13 @@ This command will run the following scripts concurrently:
 To run the unit tests, use:
 
 ```bash
-npm run test
+pnpm test
 ```
 
 To run Playwright end-to-end tests, use:
 
 ```bash
-npm run test:pw
+pnpm start && pnpm test:pw
 ```
 
 ### Linting
@@ -73,13 +92,13 @@ npm run test:pw
 To check for code quality issues, run:
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
 To automatically fix linting errors, run:
 
 ```bash
-npm run lint:fix
+pnpm lint:fix
 ```
 
 ### Type Checking
@@ -87,7 +106,7 @@ npm run lint:fix
 To perform type checking on the codebase, run:
 
 ```bash
-npm run typecheck
+pnpm typecheck
 ```
 
 ## Scripts

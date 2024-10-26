@@ -11,4 +11,10 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
     ignoreHTTPSErrors: true,
   },
+  webServer: {
+    command: "pnpm start",
+    url: "http://localhost:3000",
+    reuseExistingServer: true,
+    timeout: 120 * 1000,
+  },
 });

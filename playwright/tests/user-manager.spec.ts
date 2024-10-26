@@ -6,13 +6,12 @@ test.describe("UserManager component", () => {
   });
 
   test("should allow adding a new user", async ({ page }) => {
-    page.pause();
     await page.locator("button", { hasText: "Add User" }).click();
 
     await page.locator('input[name="firstName"]').fill("John");
     await page.locator('input[name="lastName"]').fill("Doe");
     await page.locator('input[name="age"]').fill("30");
-    await page.locator("#gender-label").click();
+    await page.locator('#gender-label').click();
     await page.locator("li", { hasText: "Male" }).click();
 
     await page.locator("form").locator('button[type="submit"]').click();

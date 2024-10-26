@@ -1,5 +1,7 @@
-import { ApolloServer, gql } from "apollo-server";
-import axios from "axios";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { ApolloServer, gql } = require("apollo-server");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const axios = require("axios");
 
 const REST_API_URL = "http://localhost:5000/users";
 

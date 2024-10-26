@@ -8,25 +8,27 @@ test.describe("UserManager component", () => {
   test("should allow adding a new user", async ({ page }) => {
     await page.locator("button", { hasText: "Add User" }).click();
 
-    await page.locator('input[name="firstName"]').fill("John");
-    await page.locator('input[name="lastName"]').fill("Doe");
+
+    await page.locator('#mui-component-select-gender').click()
+    await page.waitForSelector('ul[role="listbox"]')
+    await page.locator('li[data-value="Male"]').click()
+    await page.locator('input[name="firstName"]').fill("Johnny");
+    await page.locator('input[name="lastName"]').fill("Candoe");
     await page.locator('input[name="age"]').fill("30");
-    await page.locator('#gender-label').click();
-    await page.locator("li", { hasText: "Male" }).click();
 
     await page.locator("form").locator('button[type="submit"]').click();
 
     const alert = await page.locator('[role="status"]');
     await expect(alert).toHaveText("User added");
   });
-  /** 
+
   test("should allow editing an existing user", async ({ page }) => {
     await page
       .locator("tr >> nth=1")
       .locator("button", { hasText: "Edit" })
       .click();
 
-    await page.locator('input[name="firstName"]').fill("Jane");
+    await page.locator('input[name="firstName"]').fill("Janey");
 
     await page.locator("form").locator('button[type="submit"]').click();
 
@@ -39,11 +41,10 @@ test.describe("UserManager component", () => {
       .locator("tr >> nth=1")
       .locator('button[aria-label="delete"]')
       .click();
-
     await page.locator("button", { hasText: "Delete" }).click();
-
     const userRows = await page.locator("table tbody tr");
-    await expect(userRows).toHaveCount(0);
+
+    await expect(userRows).toHaveCount(13);
   });
 
   test("should sort users by first name", async ({ page }) => {
@@ -61,5 +62,5 @@ test.describe("UserManager component", () => {
     expect(firstRowFirstName!.localeCompare(secondRowFirstName!)).toBeLessThan(
       0,
     );
-  });*/
+  });
 });

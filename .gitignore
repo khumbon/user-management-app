@@ -4,3 +4,6 @@ node_modules
 
 # Playwright
 test-results/
+
+# Ignore changes to db
+backend/db.json

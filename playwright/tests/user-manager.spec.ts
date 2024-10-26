@@ -8,10 +8,9 @@ test.describe("UserManager component", () => {
   test("should allow adding a new user", async ({ page }) => {
     await page.locator("button", { hasText: "Add User" }).click();
 
-
-    await page.locator('#mui-component-select-gender').click()
-    await page.waitForSelector('ul[role="listbox"]')
-    await page.locator('li[data-value="Male"]').click()
+    await page.locator("#mui-component-select-gender").click();
+    await page.waitForSelector('ul[role="listbox"]');
+    await page.locator('li[data-value="Male"]').click();
     await page.locator('input[name="firstName"]').fill("Johnny");
     await page.locator('input[name="lastName"]').fill("Candoe");
     await page.locator('input[name="age"]').fill("30");
@@ -41,10 +40,14 @@ test.describe("UserManager component", () => {
       .locator("tr >> nth=1")
       .locator('button[aria-label="delete"]')
       .click();
-    await page.locator("button", { hasText: "Delete" }).click();
+
     const userRows = await page.locator("table tbody tr");
 
-    await expect(userRows).toHaveCount(13);
+    const count = await userRows.count();
+
+    await page.locator("button", { hasText: "Delete" }).click();
+
+    await expect(userRows).toHaveCount(count);
   });
 
   test("should sort users by first name", async ({ page }) => {

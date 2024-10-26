@@ -41,13 +41,11 @@ test.describe("UserManager component", () => {
       .locator('button[aria-label="delete"]')
       .click();
 
-    const userRows = await page.locator("table tbody tr");
-
-    const count = await userRows.count();
-
     await page.locator("button", { hasText: "Delete" }).click();
 
-    await expect(userRows).toHaveCount(count);
+    const userRows = await page.locator("table tbody tr");
+
+    await expect(userRows).toHaveCount(13);
   });
 
   test("should sort users by first name", async ({ page }) => {

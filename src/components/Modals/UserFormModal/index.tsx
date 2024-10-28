@@ -62,7 +62,9 @@ export const UserFormModal = ({
               <MenuItem value="Male">{Gender.MALE}</MenuItem>
             </Select>
             {errors.gender && (
-              <Typography color="error">Gender is required</Typography>
+              <Typography variant="caption" color="error">
+                Gender is required
+              </Typography>
             )}
           </FormControl>
           <TextField

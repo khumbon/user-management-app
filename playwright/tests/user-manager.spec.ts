@@ -69,4 +69,48 @@ test.describe("UserManager component", () => {
       0,
     );
   });
+
+  test("should show validation errors when adding a new user with missing fields", async ({
+    page,
+  }) => {
+    await page.locator("button", { hasText: "Add User" }).click();
+
+    await page.locator("form").locator('button[type="submit"]').click();
+
+    await expect(page.getByText("Gender is required")).toBeVisible();
+    await expect(page.getByText("First name is required")).toBeVisible();
+    await expect(page.getByText("Last name is required")).toBeVisible();
+    await expect(page.getByText("Age is required")).toBeVisible();
+  });
+
+  test("should show validation error for invalid age", async ({ page }) => {
+    await page.locator("button", { hasText: "Add User" }).click();
+
+    await page.locator("#mui-component-select-gender").click();
+    await page.waitForSelector('ul[role="listbox"]');
+    await page.locator('li[data-value="Male"]').click();
+    await page.locator('input[name="firstName"]').fill("Johnny");
+    await page.locator('input[name="lastName"]').fill("Candoe");
+    await page.locator('input[name="age"]').fill("120");
+
+    await page.locator("form").locator('button[type="submit"]').click();
+
+    await expect(page.getByText("Maximum age for males is 112")).toBeVisible();
+  });
+
+  test("should not apply changes if edit is cancelled", async ({ page }) => {
+    await page
+      .locator("tr >> nth=1")
+      .locator("button", { hasText: "Edit" })
+      .click();
+
+    await page.locator('input[name="firstName"]').fill("Temporary Name");
+    await page.locator("button", { hasText: "Cancel" }).click();
+
+    const firstRowFirstName = await page
+      .locator("table tbody tr >> nth=1")
+      .locator("td >> nth=1")
+      .textContent();
+    expect(firstRowFirstName).not.toBe("Temporary Name");
+  });
 });

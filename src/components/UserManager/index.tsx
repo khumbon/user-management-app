@@ -61,12 +61,20 @@ const schema: Yup.ObjectSchema<FormValues> = Yup.object().shape({
     .transform((value, originalValue) => (originalValue === "" ? null : value))
     .required("Age is required")
     .min(18, "Age must be at least 18")
-    .test("max-age", "Maximum age is invalid", function (value) {
+    .test("max-age", "Age is invalid", function (value) {
       const { gender } = this.parent;
-      return (
-        (gender === Gender.MALE && value <= 112) ||
-        (gender === Gender.FEMALE && value <= 117)
-      );
+      if (gender === Gender.MALE) {
+        return (
+          value <= 112 ||
+          this.createError({ message: "Maximum age for males is 112" })
+        );
+      } else if (gender === Gender.FEMALE) {
+        return (
+          value <= 117 ||
+          this.createError({ message: "Maximum age for females is 117" })
+        );
+      }
+      return true;
     }),
 });
 

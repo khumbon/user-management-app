@@ -133,9 +133,9 @@ export const UserManager = () => {
     setShowModal(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (userToDelete?.id) {
-      deleteUser.mutate(userToDelete?.id, usersUpdate("User deleted"));
+      await deleteUser.mutate(userToDelete?.id, usersUpdate("User deleted"));
       setShowDeleteModal(false);
     }
   };

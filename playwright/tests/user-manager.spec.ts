@@ -41,15 +41,20 @@ test.describe("UserManager component", () => {
       .locator('button[aria-label="delete"]')
       .click();
 
-    await page.locator("button", { hasText: "Delete" }).click();
-
     const userRows = await page.locator("table tbody tr");
 
-    await expect(userRows).toHaveCount(11);
+    const count = await userRows.count();
+
+    await page.locator("button", { hasText: "Delete" }).click();
+    await page.reload();
+    await expect(userRows).toHaveCount(count - 1);
   });
 
   test("should sort users by first name", async ({ page }) => {
-    await page.locator("th", { hasText: "First Name" }).click();
+    const header = await page
+      .locator("th", { hasText: "First Name" })
+      .locator('span[role="button"]');
+    await header.click();
 
     const firstRowFirstName = await page
       .locator("table tbody tr >> nth=0")
